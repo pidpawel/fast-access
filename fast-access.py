@@ -20,7 +20,7 @@ class FastAccess:
 	plugins = Plugins()
 	config = ConfigParser.ConfigParser()
 	pluginButtons = {}
-	
+
 	def parseInput(self, widget, data=None):
 		query = widget.get_text()
 		slices = query.split(" ")
@@ -73,7 +73,7 @@ class FastAccess:
 	def about(self, widget, event):
 		about = gtk.AboutDialog()
 		about.set_position(gtk.WIN_POS_CENTER)
-		about.set_icon(self.getSystemIcon("system-run", 12))
+		about.set_icon(self.getPixbufFromImage("system-run.png", 12))
 		about.set_program_name("Fast-access")
 		about.set_version("v0.2")
 		about.set_authors(["PidPawel - "+_("author")])
@@ -107,7 +107,7 @@ class FastAccess:
 		self.window.connect("destroy", self.destroy)
 		self.window.set_position(gtk.WIN_POS_CENTER)
 		self.window.set_title("Fast-access")
-		self.window.set_icon(self.getSystemIcon("system-run", 12))
+		self.window.set_icon(self.getPixbufFromImage("system-run.png", 12))
 		self.window.set_default_size(572, 83)
 		self.window.set_border_width(10)
 
@@ -117,7 +117,7 @@ class FastAccess:
 		self.searchEntry.connect("activate", self.executeInputDefault, None)
 
 		self.searchImage = gtk.Image()
-		self.searchImage.set_from_pixbuf(self.getSystemIcon("system-run", 48))
+		self.searchImage.set_from_pixbuf(self.getPixbufFromImage("system-run.png", 48))
 		self.searchImage.set_size_request(60,0)
 
 		self.searchLine = gtk.HBox(False, 2)
@@ -193,7 +193,7 @@ class FastAccess:
 										self.getPixbufFromImage(self.plugins.plugins[nam].icon),
 										self.plugins.plugins[nam].name,
 										nam,
-										nam]) 
+										nam])
 
 
 		print(" >>> Interface loaded <<< ")
