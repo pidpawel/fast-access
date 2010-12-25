@@ -37,6 +37,7 @@ TODO
 * plugin aliases (is it really important?)
 * html, irc methods
 * gui for raw, text, html plugins
+* ↑ and ↓ support.
 
 Features
 --------
@@ -46,6 +47,7 @@ Features
 * plugins system
 * plugins blacklisting
 * spell checker
+* gnome-idependent
 * some other, hidden features (one can call it bug, but I don't care)
 
 License and author info
