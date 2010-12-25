@@ -41,6 +41,7 @@ TODO
 * gui for raw, text, html plugins
 * ↑ and ↓ support
 * <tab>completion
+* plugin `run` may use `/usr/share/applications` instead of strange library
 
 Features
 --------
