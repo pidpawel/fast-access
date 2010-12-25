@@ -22,6 +22,8 @@ Firefox - or other browser, configurable in config file
 
 wmctrl - to switch between desktops
 
+gnome-menus - plugin `run` requires it
+
 Usage
 -----
 Copy `example.cfg` file into `~/fast-access.cfg`, read and change it to fit your purposes.
