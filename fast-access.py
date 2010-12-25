@@ -73,10 +73,13 @@ class FastAccess:
 		query = self.searchEntry.get_text()
 		slices = query.split(" ")
 		if len(query) > 0:
-			if data != None:
-				self.plugins.use(	"gtk",
-									widget.get_model()[data][2],
-									query, {"feature": widget.get_model()[data][3]})
+			try:
+				if data != None:
+					self.plugins.use(	"gtk",
+										widget.get_model()[data][2],
+										query, {"feature": widget.get_model()[data][3]})
+			except:
+				self.error(_("I don't know what to do with this."))
 		else:
 			self.error(_("Just enter something. It will be easier for me to guess what do you want. Ya, rly."))
 
@@ -100,7 +103,7 @@ class FastAccess:
 		about.destroy()
 
 	def error(self, text):
-		print(_("Error")+": " + text)
+		print(" >!> "+_("Error")+": " + text)
 		box = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, text)
 		box.set_title("Error")
 		box.run()
