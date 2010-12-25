@@ -20,6 +20,20 @@ class FastAccess:
 	plugins = Plugins()
 	config = ConfigParser.ConfigParser()
 	pluginButtons = {}
+	cachedFeatures = []
+
+	def cacheFeatures(self):
+		self.cachedFeatures[:]= []
+		self.cachedFeatures.extend(self.plugins.listFeatures())
+
+		for nam in self.cachedFeatures:
+			nam["icon"] = self.getPixbufFromImage(nam["icon"])
+
+		for nam in self.plugins.loaded():
+			self.cachedFeatures.append({	"plugin": nam,
+											"feature": nam,
+											"icon": self.getPixbufFromImage(self.plugins.plugins[nam].icon),
+											"text": self.plugins.plugins[nam].name})
 
 	def parseInput(self, widget, data=None):
 		query = widget.get_text()
@@ -30,25 +44,25 @@ class FastAccess:
 
 		if ll > 0:
 			found = []
-			found.extend(self.plugins.listFeatures())
-
-			for nam in self.plugins.loaded():
-				found.append({	"plugin": nam,
-								"feature": nam,
-								"icon": self.plugins.plugins[nam].icon,
-								"text": self.plugins.plugins[nam].name})
+			found.extend(self.cachedFeatures)
 
 			for feature in found:
 				dist = levenshtein(feature["feature"][:ll].lower(), slices[0].lower()) + 0.0
 				feature["accuracy"] = ( ( (ll-dist)/ll )*90.0 ) - len(feature["feature"]) + dist
 
-			found.extend(self.plugins.checkAll(query))
+			dynamic = self.plugins.checkAll(query)
+			for nam in dynamic:
+				nam["icon"] = self.getPixbufFromImage(nam["icon"])
+			found.extend(dynamic)
+
 			found = self.plugins.sortFeatures(found)
 
 			for feature in found:
 				if feature["accuracy"] > 50:
 					self.pluginStore.append(
-											[self.getPixbufFromImage(feature["icon"]),
+											[
+											#self.getPixbufFromImage(feature["icon"]),
+											feature["icon"],
 											feature["text"]+" ("+str(feature["accuracy"])+")",
 											feature["plugin"],
 											feature["feature"]])
@@ -59,10 +73,13 @@ class FastAccess:
 		query = self.searchEntry.get_text()
 		slices = query.split(" ")
 		if len(query) > 0:
-			if data != None:
-				self.plugins.use(	"gtk",
-									widget.get_model()[data][2],
-									query, {"feature": widget.get_model()[data][3]})
+			try:
+				if data != None:
+					self.plugins.use(	"gtk",
+										widget.get_model()[data][2],
+										query, {"feature": widget.get_model()[data][3]})
+			except:
+				self.error(_("I don't know what to do with this."))
 		else:
 			self.error(_("Just enter something. It will be easier for me to guess what do you want. Ya, rly."))
 
@@ -86,7 +103,7 @@ class FastAccess:
 		about.destroy()
 
 	def error(self, text):
-		print(_("Error")+": " + text)
+		print(" >!> "+_("Error")+": " + text)
 		box = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, text)
 		box.set_title("Error")
 		box.run()
@@ -139,8 +156,6 @@ class FastAccess:
 		self.buttonsLine.pack_start(self.buttonFiller, True, True)
 		self.buttonsLine.pack_start(self.buttonCancel, True, True)
 		self.buttonsLine.pack_start(self.buttonSearch, True, True)
-
-		self.fileIcon = self.getSystemIcon(gtk.STOCK_FILE)
 
 		self.pluginStore = gtk.ListStore(gtk.gdk.Pixbuf, str, str, str)
 
@@ -195,20 +210,36 @@ class FastAccess:
 										nam,
 										nam])
 
+		self.cacheFeatures()
 
 		print(" >>> Interface loaded <<< ")
 		self.window.show_all()
 
-	def getSystemIcon(self, name, size=24):
-		theme = gtk.icon_theme_get_default()
-		return theme.load_icon(name, size, 0)
 	def getPixbufFromImage(self, name, size=24):
-		img = gtk.Image()
-		img.set_from_file(os.path.abspath(os.path.dirname(sys.argv[0]))+"/icons/"+name)
 		try:
-			return img.get_pixbuf().scale_simple(size, size, gtk.gdk.INTERP_BILINEAR)
+			theme = gtk.IconTheme()
+			return theme.load_icon(name, size, 0)
 		except:
-			return None
+			try:
+				theme = gtk.icon_theme_get_default()
+				return theme.load_icon(name, size, 0)
+			except:
+				try:
+					img = gtk.Image()
+					img.set_from_file(os.path.abspath(os.path.dirname(sys.argv[0]))+"/icons/"+name)
+					return img.get_pixbuf().scale_simple(size, size, gtk.gdk.INTERP_BILINEAR)
+				except:
+					try:
+						img = gtk.Image()
+						img.set_from_file(name)
+						return img.get_pixbuf().scale_simple(size, size, gtk.gdk.INTERP_BILINEAR)
+					except:
+						return gtk.gdk.Pixbuf(	gtk.gdk.COLORSPACE_RGB,
+												True,
+												8,
+												size,
+												size)
+						
 
 	def main(self):
 		gtk.main()
