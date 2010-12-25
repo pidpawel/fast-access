@@ -20,6 +20,10 @@ class FastAccess:
 	plugins = Plugins()
 	config = ConfigParser.ConfigParser()
 	pluginButtons = {}
+	cachedFeatures = []
+
+	def cacheFeatures(self):
+		
 
 	def parseInput(self, widget, data=None):
 		query = widget.get_text()
@@ -203,12 +207,31 @@ class FastAccess:
 		theme = gtk.icon_theme_get_default()
 		return theme.load_icon(name, size, 0)
 	def getPixbufFromImage(self, name, size=24):
-		img = gtk.Image()
-		img.set_from_file(os.path.abspath(os.path.dirname(sys.argv[0]))+"/icons/"+name)
+		print name
 		try:
-			return img.get_pixbuf().scale_simple(size, size, gtk.gdk.INTERP_BILINEAR)
+			theme = gtk.IconTheme()
+			return theme.load_icon(name, size, 0)
 		except:
-			return None
+			try:
+				theme = gtk.icon_theme_get_default()
+				return theme.load_icon(name, size, 0)
+			except:
+				try:
+					img = gtk.Image()
+					img.set_from_file(os.path.abspath(os.path.dirname(sys.argv[0]))+"/icons/"+name)
+					return img.get_pixbuf().scale_simple(size, size, gtk.gdk.INTERP_BILINEAR)
+				except:
+					try:
+						img = gtk.Image()
+						img.set_from_file(name)
+						return img.get_pixbuf().scale_simple(size, size, gtk.gdk.INTERP_BILINEAR)
+					except:
+						return gtk.gdk.Pixbuf(	gtk.gdk.COLORSPACE_RGB,
+												True,
+												8,
+												size,
+												size)
+						
 
 	def main(self):
 		gtk.main()
