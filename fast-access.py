@@ -81,7 +81,7 @@ class FastAccess:
 		about.set_copyright("© by PidPawel "+_("on license")+" Creative Commons BY-NC-SA")
 		about.set_comments(_("Fast access to various websearch engines"))
 		about.set_website("https://github.com/pidpawel/fast-access")
-		about.set_logo(self.getSystemIcon("system-run", 48))
+		about.set_logo(self.getPixbufFromImage("system-run.png", 48))
 		about.run()
 		about.destroy()
 
