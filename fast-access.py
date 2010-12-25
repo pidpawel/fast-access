@@ -39,7 +39,7 @@ class FastAccess:
 								"text": self.plugins.plugins[nam].name})
 
 			for feature in found:
-				dist = levenshtein(feature["feature"][:ll], slices[0]) + 0.0
+				dist = levenshtein(feature["feature"][:ll].lower(), slices[0].lower()) + 0.0
 				feature["accuracy"] = ( ( (ll-dist)/ll )*90.0 ) - len(feature["feature"]) + dist
 
 			found.extend(self.plugins.checkAll(query))
