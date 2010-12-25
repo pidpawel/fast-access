@@ -157,8 +157,6 @@ class FastAccess:
 		self.buttonsLine.pack_start(self.buttonCancel, True, True)
 		self.buttonsLine.pack_start(self.buttonSearch, True, True)
 
-		self.fileIcon = self.getSystemIcon(gtk.STOCK_FILE)
-
 		self.pluginStore = gtk.ListStore(gtk.gdk.Pixbuf, str, str, str)
 
 		self.pluginView = gtk.TreeView(self.pluginStore)
@@ -217,9 +215,6 @@ class FastAccess:
 		print(" >>> Interface loaded <<< ")
 		self.window.show_all()
 
-	def getSystemIcon(self, name, size=24):
-		theme = gtk.icon_theme_get_default()
-		return theme.load_icon(name, size, 0)
 	def getPixbufFromImage(self, name, size=24):
 		try:
 			theme = gtk.IconTheme()
