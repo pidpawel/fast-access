@@ -23,7 +23,17 @@ class FastAccess:
 	cachedFeatures = []
 
 	def cacheFeatures(self):
-		
+		self.cachedFeatures[:]= []
+		self.cachedFeatures.extend(self.plugins.listFeatures())
+
+		for nam in self.cachedFeatures:
+			nam["icon"] = self.getPixbufFromImage(nam["icon"])
+
+		for nam in self.plugins.loaded():
+			self.cachedFeatures.append({	"plugin": nam,
+											"feature": nam,
+											"icon": self.getPixbufFromImage(self.plugins.plugins[nam].icon),
+											"text": self.plugins.plugins[nam].name})
 
 	def parseInput(self, widget, data=None):
 		query = widget.get_text()
@@ -34,25 +44,25 @@ class FastAccess:
 
 		if ll > 0:
 			found = []
-			found.extend(self.plugins.listFeatures())
-
-			for nam in self.plugins.loaded():
-				found.append({	"plugin": nam,
-								"feature": nam,
-								"icon": self.plugins.plugins[nam].icon,
-								"text": self.plugins.plugins[nam].name})
+			found.extend(self.cachedFeatures)
 
 			for feature in found:
 				dist = levenshtein(feature["feature"][:ll].lower(), slices[0].lower()) + 0.0
 				feature["accuracy"] = ( ( (ll-dist)/ll )*90.0 ) - len(feature["feature"]) + dist
 
-			found.extend(self.plugins.checkAll(query))
+			dynamic = self.plugins.checkAll(query)
+			for nam in dynamic:
+				nam["icon"] = self.getPixbufFromImage(nam["icon"])
+			found.extend(dynamic)
+
 			found = self.plugins.sortFeatures(found)
 
 			for feature in found:
 				if feature["accuracy"] > 50:
 					self.pluginStore.append(
-											[self.getPixbufFromImage(feature["icon"]),
+											[
+											#self.getPixbufFromImage(feature["icon"]),
+											feature["icon"],
 											feature["text"]+" ("+str(feature["accuracy"])+")",
 											feature["plugin"],
 											feature["feature"]])
@@ -199,6 +209,7 @@ class FastAccess:
 										nam,
 										nam])
 
+		self.cacheFeatures()
 
 		print(" >>> Interface loaded <<< ")
 		self.window.show_all()
@@ -207,7 +218,6 @@ class FastAccess:
 		theme = gtk.icon_theme_get_default()
 		return theme.load_icon(name, size, 0)
 	def getPixbufFromImage(self, name, size=24):
-		print name
 		try:
 			theme = gtk.IconTheme()
 			return theme.load_icon(name, size, 0)
