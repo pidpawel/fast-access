@@ -8,9 +8,7 @@ You can also easily change the search engine by typing something like `wiki phra
 For example:
 
 	google test
-
 	wikien ascii
-
 	bingimages home
 
 List of available search engines is configurable by the config file, just like the browser or wmctrl
