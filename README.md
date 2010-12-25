@@ -7,11 +7,11 @@ You can also easily change the search engine by typing something like `wiki phra
 
 For example:
 
-`google test
+	google test
 
-wikien ascii
+	wikien ascii
 
-bingimages home`
+	bingimages home
 
 List of available search engines is configurable by the config file, just like the browser or wmctrl
 (the thing which allows this software to change active window).
