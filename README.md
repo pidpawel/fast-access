@@ -37,7 +37,8 @@ TODO
 * plugin aliases (is it really important?)
 * html, irc methods
 * gui for raw, text, html plugins
-* ↑ and ↓ support.
+* ↑ and ↓ support
+* <tab>completion
 
 Features
 --------
