@@ -6,15 +6,13 @@ import gmenu
 
 class plugin(Template):
 	name = "Run"
-	icon = "web.png"
+	icon = "system-run.png"
 	config = False
 
 	def parseTree(self, tree):
 		rt = []
-		#print tree.contents
 		for a in tree.contents:
 			if isinstance(a, gmenu.Directory):
-				#print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 				rt.extend(self.parseTree(a))
 			else:
 				rt.append({"plugin": "run",
@@ -31,15 +29,30 @@ class plugin(Template):
 
 	def featuresList(self):
 		menu_files = ["applications.menu", "settings.menu"]
-
 		found = []
 		for menu_file in menu_files:
 			if menu_file == "applications.menu" and os.environ.has_key ("XDG_MENU_PREFIX"):
 				menu_file = os.environ["XDG_MENU_PREFIX"] + menu_file
-			print menu_file
 			found.extend(self.parseFile(menu_file))
-#		print found
 		return found
 
 	def gtk(self, window, query, additional={}):
-		print "lulz"
+		slices = query.split(" ")
+		try:
+			app = additional["feature"].split(" ")[0]
+			query = " ".join(slices[1:])
+		except:
+			box = gtk.MessageDialog(window, gtk.DIALOG_DESTROY_WITH_PARENT,
+							gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
+							"I don't know such app.")
+			box.set_position(gtk.WIN_POS_CENTER)
+			box.run()
+			box.destroy()
+			return False
+
+		print app + " " + query
+		os.system(app + " " + query + " &")
+		if self.config.getboolean('Global', 'wmctrl'):
+			os.system("wmctrl -a" + app)
+		window.destroy()
+
