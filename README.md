@@ -27,7 +27,7 @@ gnome-menus - plugin `run` requires it
 Usage
 -----
 Copy `example.cfg` file into `~/fast-access.cfg`, read and change it to fit your purposes.
-Than simply run `fast-access.py` and fill the search line with your phrase.
+Then simply run `fast-access.py` and fill the search line with your phrase.
 
 It's a good idea to bind it to a certain key. Like Alt + F3
 
