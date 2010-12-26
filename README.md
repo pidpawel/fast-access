@@ -41,6 +41,7 @@ TODO
 * html methods
 * gui for raw, text, html plugins
 * add some plugins
+* plugins/libs translations
 * try to make `make install`
 * write plugin writing howto
 
