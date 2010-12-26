@@ -33,26 +33,27 @@ It's a good idea to bind it to a certain key. Like Alt + F3
 
 TODO
 ----
-* try to make `make install`
-* add some plugins
-* write plugin writing howto
-* plugin aliases (is it really important?)
-* html, irc methods
-* gui for raw, text, html plugins
-* ↑ and ↓ support
-* <tab>completion
 * plugin `run` may use `/usr/share/applications` instead of strange library
+* ↑ and ↓ support
+* tray
+* <tab>completion
+* plugin aliases (Is it really important? Ya. It is.)
+* html methods
+* gui for raw, text, html plugins
+* add some plugins
+* try to make `make install`
+* write plugin writing howto
 
 Features
 --------
-* configuration file support
-* various browser support (via configuration file)
-* various search engines support (via configuration file)
-* plugins system
-* plugins blacklisting
-* spell checker
-* gnome-idependent
-* some other, hidden features (one can call it bug, but I don't care)
+* Configuration file support
+* Various browser support (via configuration file)
+* Various search engines support (via configuration file)
+* Plugins system
+* Plugins blacklisting
+* Spell checker
+* Gnome-idependent
+* Some other, hidden features (One can call it bug, but I don't care.)
 
 License and author info
 -----------------------
