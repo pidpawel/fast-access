@@ -28,7 +28,10 @@ class plugin(Template):
 				try:
 					text = cp.get("Desktop Entry", "GenericName")
 				except:
-					text = cp.get("Desktop Entry", "Name")
+					try:
+						text = cp.get("Desktop Entry", "Name")
+					except:
+						return None
 			try:
 				icon = cp.get("Desktop Entry", "Icon")
 			except:
@@ -48,7 +51,16 @@ class plugin(Template):
 
 	def featuresList(self):
 		ret = []
-		apps = os.listdir("/usr/share/applications/")
+		apps = []
+		try:
+			apps.extend(os.listdir("/usr/share/applications/"))
+		except:
+			pass
+		try:
+			apps.extend(os.listdir("/usr/local/share/applications/"))
+		except:
+			pass
+
 		for app in apps:
 			if app.split(".")[-1] == "desktop":
 				res = self.parseFile(app)
