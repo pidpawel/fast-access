@@ -2,39 +2,59 @@
 import sys, os
 import ConfigParser
 from . import Template
-import gmenu
+import ConfigParser
 
 class plugin(Template):
 	name = "Run"
 	icon = "system-run.png"
 	config = False
 
-	def parseTree(self, tree):
-		rt = []
-		for a in tree.contents:
-			if isinstance(a, gmenu.Directory):
-				rt.extend(self.parseTree(a))
-			else:
-				rt.append({"plugin": "run",
-						"feature": a.get_exec(),
-						"icon": a.get_icon(),
-						"text": a.get_display_name()})
-		return rt
+	def parseFile(self, name):
+		cp = ConfigParser.RawConfigParser()
+		cp.read("/usr/share/applications/"+name)
+		print name
+		stop = False
+		try:
+			if cp.getboolean("Desktop Entry", "NoDisplay") == "true":
+				stop = True
+		except:
+			stop = False
 
-	def parseFile(self, fil):
-		return self.parseTree(gmenu.lookup_tree (fil, gmenu.FLAGS_INCLUDE_EXCLUDED).root)
+		if stop == False:
+			text = ""
+			try:
+				text = cp.get("Desktop Entry", "GenericName[pl]")
+			except:
+				try:
+					text = cp.get("Desktop Entry", "GenericName")
+				except:
+					text = cp.get("Desktop Entry", "Name")
+			try:
+				icon = cp.get("Desktop Entry", "Icon")
+			except:
+				print " >>> Brak ikony "+name
+				icon = ""
+			return {
+					"plugin": "run",
+					"feature": cp.get("Desktop Entry", "Exec"),
+					"icon": icon,
+					"text": text
+					}
+		else:
+			return None
 
 	def __init__(self, config):
 		self.config = config
 
 	def featuresList(self):
-		menu_files = ["applications.menu", "settings.menu"]
-		found = []
-		for menu_file in menu_files:
-			if menu_file == "applications.menu" and os.environ.has_key ("XDG_MENU_PREFIX"):
-				menu_file = os.environ["XDG_MENU_PREFIX"] + menu_file
-			found.extend(self.parseFile(menu_file))
-		return found
+		ret = []
+		apps = os.listdir("/usr/share/applications/")
+		for app in apps:
+			if app.split(".")[-1] == "desktop":
+				res = self.parseFile(app)
+				if res != None:
+					ret.append(res)
+		return ret
 
 	def gtk(self, window, query, additional={}):
 		slices = query.split(" ")
@@ -55,4 +75,3 @@ class plugin(Template):
 		if self.config.getboolean('Global', 'wmctrl'):
 			os.system("wmctrl -a" + app)
 		window.destroy()
-

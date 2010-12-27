@@ -1,4 +1,4 @@
-import re, types, sys, traceback, imp
+import re, types, sys, traceback, imp, time
 
 levels = ["raw", "text", "gtk"]
 
@@ -11,6 +11,7 @@ class Plugins():
 
 	def load(self, name):
 		try:
+			start = time.time()
 			self.unload(name)
 			self.files[name] = __import__("plugins." + name, globals(), locals(), [name], -1)
 			self.plugins[name] = self.files[name].plugin(self.useConfig)
@@ -24,7 +25,8 @@ class Plugins():
 			self.unload(name)
 			return("ERROR in plugin: " + name)
 		if self.plugins.has_key(name):
-			print(" >>> Plugin " + name + " loaded.")
+			delta = time.time() - start
+			print(" >>> Plugin " + name + " loaded (Loaded in "+str(delta)+" seconds)")
 			return("Plugin " + name + " loaded.")
 
 	def unload(self, name):
