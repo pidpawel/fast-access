@@ -12,7 +12,6 @@ class plugin(Template):
 	def parseFile(self, name):
 		cp = ConfigParser.RawConfigParser()
 		cp.read("/usr/share/applications/"+name)
-		print name
 		stop = False
 		try:
 			if cp.getboolean("Desktop Entry", "NoDisplay") == "true":
@@ -35,7 +34,7 @@ class plugin(Template):
 			try:
 				icon = cp.get("Desktop Entry", "Icon")
 			except:
-				print " >>> Brak ikony "+name
+				#print " >>> Brak ikony "+name
 				icon = ""
 			return {
 					"plugin": "run",
